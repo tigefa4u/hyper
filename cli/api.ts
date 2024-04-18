@@ -2,18 +2,20 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import fs from 'fs';
 import os from 'os';
+import path from 'path';
+
 import got from 'got';
 import registryUrlModule from 'registry-url';
+
 const registryUrl = registryUrlModule();
-import path from 'path';
 
 // If the user defines XDG_CONFIG_HOME they definitely want their config there,
 // otherwise use the home directory in linux/mac and userdata in windows
 const applicationDirectory = process.env.XDG_CONFIG_HOME
   ? path.join(process.env.XDG_CONFIG_HOME, 'Hyper')
   : process.platform === 'win32'
-  ? path.join(process.env.APPDATA!, 'Hyper')
-  : path.join(os.homedir(), '.config', 'Hyper');
+    ? path.join(process.env.APPDATA!, 'Hyper')
+    : path.join(os.homedir(), '.config', 'Hyper');
 
 const devConfigFileName = path.join(__dirname, `../hyper.json`);
 
@@ -30,7 +32,7 @@ const fileName =
 function memoize<T extends (...args: any[]) => any>(fn: T): T {
   let hasResult = false;
   let result: any;
-  return ((...args: any[]) => {
+  return ((...args: Parameters<T>) => {
     if (!hasResult) {
       result = fn(...args);
       hasResult = true;

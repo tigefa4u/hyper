@@ -1,10 +1,14 @@
 import {release} from 'os';
-import {app, shell, MenuItemConstructorOptions, dialog, clipboard} from 'electron';
+
+import {app, shell, dialog, clipboard} from 'electron';
+import type {MenuItemConstructorOptions} from 'electron';
+
 import {getConfig, getPlugins} from '../../config';
-const {arch, env, platform, versions} = process;
 import {version} from '../../package.json';
 
-export default (commands: Record<string, string>, showAbout: () => void): MenuItemConstructorOptions => {
+const {arch, env, platform, versions} = process;
+
+const helpMenu = (commands: Record<string, string>, showAbout: () => void): MenuItemConstructorOptions => {
   const submenu: MenuItemConstructorOptions[] = [
     {
       label: `${app.name} Website`,
@@ -106,3 +110,5 @@ ${JSON.stringify(getPlugins(), null, 2)}
     submenu
   };
 };
+
+export default helpMenu;

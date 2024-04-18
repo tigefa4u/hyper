@@ -1,11 +1,14 @@
-import {parse, prettyPrint} from 'recast';
-import {builders, namedTypes} from 'ast-types';
-import * as babelParser from 'recast/parsers/babel';
-import {copy, copySync, existsSync, readFileSync, writeFileSync} from 'fs-extra';
 import {dirname, resolve} from 'path';
-import _ from 'lodash';
+
+import {builders, namedTypes} from 'ast-types';
+import type {ExpressionKind} from 'ast-types/lib/gen/kinds';
+import {copy, copySync, existsSync, readFileSync, writeFileSync} from 'fs-extra';
+import merge from 'lodash/merge';
+import {parse, prettyPrint} from 'recast';
+import * as babelParser from 'recast/parsers/babel';
 
 import notify from '../notify';
+
 import {_extractDefault} from './init';
 import {cfgDir, cfgPath, defaultCfg, legacyCfgPath, plugs, schemaFile, schemaPath} from './paths';
 
@@ -63,7 +66,7 @@ export function configToPlugin(code: string): string {
   });
   const statements = ast.program.body;
   let moduleExportsNode: namedTypes.AssignmentExpression | null = null;
-  let configNode: any = null;
+  let configNode: ExpressionKind | null = null;
 
   for (const statement of statements) {
     if (namedTypes.ExpressionStatement.check(statement)) {
@@ -86,7 +89,7 @@ export function configToPlugin(code: string): string {
               namedTypes.Identifier.check(property.key) &&
               property.key.name === 'config'
             ) {
-              configNode = property.value;
+              configNode = property.value as ExpressionKind;
               if (namedTypes.ObjectExpression.check(property.value)) {
                 configNode = removeProperties(property.value);
               }
@@ -165,7 +168,7 @@ export const migrateHyper3Config = () => {
   try {
     const legacyCfgRaw = readFileSync(legacyCfgPath, 'utf8');
     const legacyCfgData = _extractDefault(legacyCfgRaw);
-    newCfgData = _.merge({}, defaultCfgData, legacyCfgData);
+    newCfgData = merge({}, defaultCfgData, legacyCfgData);
 
     const pluginCode = configToPlugin(legacyCfgRaw);
     if (pluginCode) {

@@ -1,8 +1,10 @@
 // This module exports paths, names, and other metadata that is referenced
-import {homedir} from 'os';
-import {app} from 'electron';
 import {statSync} from 'fs';
+import {homedir} from 'os';
 import {resolve, join} from 'path';
+
+import {app} from 'electron';
+
 import isDev from 'electron-is-dev';
 
 const cfgFile = 'hyper.json';
@@ -15,15 +17,15 @@ const homeDirectory = homedir();
 let cfgDir = process.env.XDG_CONFIG_HOME
   ? join(process.env.XDG_CONFIG_HOME, 'Hyper')
   : process.platform === 'win32'
-  ? app.getPath('userData')
-  : join(homeDirectory, '.config', 'Hyper');
+    ? app.getPath('userData')
+    : join(homeDirectory, '.config', 'Hyper');
 
 const legacyCfgPath = join(
   process.env.XDG_CONFIG_HOME !== undefined
     ? join(process.env.XDG_CONFIG_HOME, 'hyper')
     : process.platform == 'win32'
-    ? app.getPath('userData')
-    : homedir(),
+      ? app.getPath('userData')
+      : homedir(),
   '.hyper.js'
 );
 

@@ -1,4 +1,4 @@
-import {FontWeight} from 'xterm';
+import type {FontWeight} from 'xterm';
 
 export type ColorMap = {
   black: string;
@@ -19,12 +19,22 @@ export type ColorMap = {
   yellow: string;
 };
 
-export type configOptions = {
+type rootConfigOptions = {
   /**
    * if `true` (default), Hyper will update plugins every 5 hours
    * you can also set it to a custom time e.g. `1d` or `2h`
    */
   autoUpdatePlugins: boolean | string;
+  /** if `true` hyper will be set as the default protocol client for SSH */
+  defaultSSHApp: boolean;
+  /** if `true` hyper will not check for updates */
+  disableAutoUpdates: boolean;
+  /** choose either `'stable'` for receiving highly polished, or `'canary'` for less polished but more frequent updates */
+  updateChannel: 'stable' | 'canary';
+  useConpty?: boolean;
+};
+
+type profileConfigOptions = {
   /**
    * terminal background color
    *
@@ -36,7 +46,7 @@ export type configOptions = {
    * 1. 'SOUND' -> Enables the bell as a sound
    * 2. false: turns off the bell
    */
-  bell: string;
+  bell: 'SOUND' | false;
   /**
    * base64 encoded string of the sound file to use for the bell
    * if null, the default bell will be used
@@ -68,10 +78,6 @@ export type configOptions = {
   cursorColor: string;
   /** `'BEAM'` for |, `'UNDERLINE'` for _, `'BLOCK'` for █ */
   cursorShape: 'BEAM' | 'UNDERLINE' | 'BLOCK';
-  /** if `true` hyper will be set as the default protocol client for SSH */
-  defaultSSHApp: boolean;
-  /** if `true` hyper will not check for updates */
-  disableAutoUpdates: boolean;
   /** if `false` Hyper will use ligatures provided by some fonts */
   disableLigatures: boolean;
   /** for environment variables */
@@ -86,6 +92,10 @@ export type configOptions = {
   fontWeightBold: FontWeight;
   /** color of the text */
   foregroundColor: string;
+  /**
+   * Whether to enable Sixel and iTerm2 inline image protocol support or not.
+   */
+  imageSupport: boolean;
   /** letter spacing as a relative unit */
   letterSpacing: number;
   /** line height as a relative unit */
@@ -165,9 +175,6 @@ export type configOptions = {
   /** custom CSS to embed in the terminal window */
   termCSS: string;
   uiFontFamily?: string;
-  /** choose either `'stable'` for receiving highly polished, or `'canary'` for less polished but more frequent updates */
-  updateChannel: 'stable' | 'canary';
-  useConpty?: boolean;
   /**
    * Whether to use the WebGL renderer. Set it to false to use canvas-based
    * rendering (slower, but supports transparent backgrounds)
@@ -183,6 +190,25 @@ export type configOptions = {
   /** set custom startup directory (must be an absolute path) */
   workingDirectory: string;
 };
+
+export type configOptions = rootConfigOptions &
+  profileConfigOptions & {
+    /**
+     * The default profile name to use when launching a new session
+     */
+    defaultProfile: string;
+    /**
+     * A list of profiles to use
+     */
+    profiles: {
+      name: string;
+      /**
+       * Specify all the options you want to override for each profile.
+       * Options set here override the defaults set in the root.
+       */
+      config: Partial<profileConfigOptions>;
+    }[];
+  };
 
 export type rawConfig = {
   config?: configOptions;

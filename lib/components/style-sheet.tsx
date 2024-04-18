@@ -1,24 +1,27 @@
-import React from 'react';
-import {StyleSheetProps} from '../hyper';
+import React, {forwardRef} from 'react';
 
-export default class StyleSheet extends React.PureComponent<StyleSheetProps> {
-  render() {
-    const {borderColor} = this.props;
+import type {StyleSheetProps} from '../../typings/hyper';
 
-    return (
-      <style jsx global>{`
-        ::-webkit-scrollbar {
-          width: 5px;
-        }
-        ::-webkit-scrollbar-thumb {
-          -webkit-border-radius: 10px;
-          border-radius: 10px;
-          background: ${borderColor};
-        }
-        ::-webkit-scrollbar-thumb:window-inactive {
-          background: ${borderColor};
-        }
-      `}</style>
-    );
-  }
-}
+const StyleSheet = forwardRef<HTMLStyleElement, StyleSheetProps>((props, ref) => {
+  const {borderColor} = props;
+
+  return (
+    <style jsx global ref={ref}>{`
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        background: ${borderColor};
+      }
+      ::-webkit-scrollbar-thumb:window-inactive {
+        background: ${borderColor};
+      }
+    `}</style>
+  );
+});
+
+StyleSheet.displayName = 'StyleSheet';
+
+export default StyleSheet;

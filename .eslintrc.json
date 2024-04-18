@@ -3,7 +3,9 @@
     "react",
     "prettier",
     "@typescript-eslint",
-    "eslint-comments"
+    "eslint-comments",
+    "lodash",
+    "import"
   ],
   "extends": [
     "eslint:recommended",
@@ -32,7 +34,11 @@
   "settings": {
     "react": {
       "version": "detect"
-    }
+    },
+    "import/resolver": {
+      "typescript": {}
+    },
+    "import/internal-regex": "^(electron|react)$"
   },
   "rules": {
     "func-names": [
@@ -92,7 +98,33 @@
         "@typescript-eslint/no-shadow": ["error"],
         "@typescript-eslint/no-unsafe-assignment": "off",
         "@typescript-eslint/no-unsafe-member-access": "off",
-        "@typescript-eslint/restrict-template-expressions": "off"
+        "@typescript-eslint/restrict-template-expressions": "off",
+        "@typescript-eslint/consistent-type-imports": [ "error", { "disallowTypeAnnotations": false } ],
+        "lodash/prop-shorthand": [ "error", "always" ],
+        "lodash/import-scope": [ "error", "method" ],
+        "lodash/collection-return": "error",
+        "lodash/collection-method-value": "error",
+        "import/no-extraneous-dependencies": "error",
+        "import/no-anonymous-default-export": "error",
+        "import/order": [
+          "error",
+          {
+            "groups": [
+              "builtin",
+              "internal",
+              "external",
+              "parent",
+              "sibling",
+              "index"
+            ],
+            "newlines-between": "always",
+            "alphabetize": {
+              "order": "asc",
+              "orderImportKind": "desc",
+              "caseInsensitive": true
+            }
+          }
+        ]
       }
     },
     {
